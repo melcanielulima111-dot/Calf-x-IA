@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CalFéx IA v6.0 </title>
+<style>
+:root {
+--azul-escuro: #0D47A1;
+--azul: #1976D2;
+--azul-claro: #42A5F5;
+--cinza-bg: #F7F9FC;
+--branco: #FFFFFF;
+--texto: #1A1A1A;
+--borda: #E0E7FF;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+
+body {
+background: var(--azul-escuro);
+min-height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 16px;
+}
+
+.container {
+width: 100%;
+max-width: 520px;
+height: 93vh;
+background: var(--branco);
+border-radius: 20px;
+box-shadow: 0 24px 80px rgba(13,71,161,0.25);
+display: flex;
+flex-direction: column;
+overflow: hidden;
+}
+
+.topo {
+background: var(--azul-escuro);
+color: var(--branco);
+padding: 20px 24px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+
+.topo h1 {
+font-size: 18px;
+font-weight: 600;
+letter-spacing: -0.5px;
+}
+
+.topo .sub {
+font-size: 12px;
+opacity: 0.7;
+margin-top: 2px;
+}
+
+.topo .acoes {
+display: flex;
+gap: 8px;
+}
+
+.topo button {
+width: 32px;
+height: 32px;
+border-radius: 8px;
+border: none;
+background: rgba(255,255,255,0.15);
+color: white;
+cursor: pointer;
+font-size: 16px;
+transition: 0.2s;
+}
+
+.topo button:hover {
+background: rgba(255,255,255,0.25);
+}
+
+.chat {
+flex: 1;
+overflow-y: auto;
+padding: 24px;
+background: var(--cinza-bg);
+}
+
+.chat::-webkit-scrollbar {
+width: 4px;
+}
+
+.chat::-webkit-scrollbar-thumb {
+background: var(--azul-claro);
+border-radius: 4px;
+}
+
+.msg {
+margin-bottom: 20px;
+animation: aparecer 0.4s ease;
+}
+
+@keyframes aparecer {
+from { opacity: 0; transform: translateY(6px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.msg.ia {
+display: flex;
+gap: 12px;
+align-items: flex-start;
+}
+
+.avatar {
+width: 34px;
+height: 34px;
+border-radius: 50%;
+background: var(--azul);
+color: white;
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: 600;
+font-size: 13px;
+flex-shrink: 0;
+}
+
+.balao {
+background: var(--branco);
+padding: 16px 18px;
+border-radius: 14px;
+border-bottom-left-radius: 4px;
+max-width: 82%;
+line-height: 1.7;
+color: var(--texto);
+border: 1px solid var(--borda);
+font-size: 14px;
+box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.msg.user {
+display: flex;
+justify-content: flex-end;
+}
+
+.msg.user .balao {
+background: var(--azul);
+color: white;
+border-bottom-left-radius: 14px;
+border-bottom-right-radius: 4px;
+border: none;
+}
+
+.titulo {
+font-weight: 600;
+color: var(--azul-escuro);
+margin-bottom: 8px;
+font-size: 15px;
+}
+
+.paragrafo {
+margin: 8px 0;
+}
+
+.lista {
+margin: 10px 0 10px 20px;
+}
+
+.lista li {
+margin: 6px 0;
+}
+
+.exemplo {
+background: #E8F5E9;
+padding: 12px 14px;
+border-radius: 8px;
+border-left: 3px solid #4CAF50;
+margin: 12px 0;
+font-size: 13px;
+}
+
+.dica {
+background: #FFF8E1;
+padding: 12px 14px;
+border-radius: 8px;
+border-left: 3px solid #FFA000;
+margin: 12px 0;
+font-size: 13px;
+}
+
+.alerta {
+background: #FFEBEE;
+padding: 14px;
+border-radius: 10px;
+border: 1px solid #EF5350;
+margin: 12px 0;
+color: #C62828;
+font-weight: 500;
+}
+
+.digitando {
+display: flex;
+gap: 4px;
+padding: 16px 18px;
+}
+
+.digitando span {
+width: 6px;
+height: 6px;
+background: var(--azul);
+border-radius: 50%;
+animation: pular 1.3s infinite;
+}
+
+.digitando span:nth-child(2) { animation-delay: 0.15s; }
+.digitando span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes pular {
+0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+30% { transform: translateY(-7px); opacity: 1; }
+}
+
+.inputArea {
+padding: 16px 24px;
+background: var(--branco);
+border-top: 1px solid var(--borda);
+display: flex;
+gap: 10px;
+}
+
+.inputArea input {
+flex: 1;
+padding: 13px 16px;
+border: 1.5px solid var(--borda);
+border-radius: 12px;
+font-size: 14px;
+outline: none;
+transition: 0.2s;
+color: var(--texto);
+}
+
+.inputArea input:focus {
+border-color: var(--azul);
+box-shadow: 0 0 0 3px rgba(25,118,210,0.1);
+}
+
+.btnEnviar {
+background: var(--azul);
+border: none;
+width: 46px;
+height: 46px;
+border-radius: 12px;
+cursor: pointer;
+color: white;
+font-size: 18px;
+transition: 0.2s;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.btnEnviar:hover {
+background: var(--azul-escuro);
+transform: scale(1.05);
+}
+
+.sugestoes {
+padding: 0 24px 16px;
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
+}
+
+.tag {
+background: var(--branco);
+border: 1.5px solid var(--borda);
+color: var(--azul-escuro);
+padding: 6px 12px;
+border-radius: 20px;
+font-size: 12px;
+cursor: pointer;
+transition: 0.2s;
+font-weight: 500;
+}
+
+.tag:hover {
+border-color: var(--azul);
+background: #E3F2FD;
+}
+
+.escuro {
+--cinza-bg: #0f172a;
+--branco: #1e293b;
+--texto: #f1f5f9;
+--borda: #334155;
+}
+
+.escuro .balao {
+background: var(--branco);
+color: var(--texto);
+border-color: var(--borda);
+}
+
+.escuro .chat {
+background: var(--cinza-bg);
+}
+
+.escuro .inputArea {
+background: var(--branco);
+border-top-color: var(--borda);
+}
+
+.escuro .inputArea input {
+background: var(--branco);
+color: var(--texto);
+border-color: var(--borda);
+}
+
+.escuro .tag {
+background: var(--branco);
+color: var(--texto);
+border-color: var(--borda);
+}
+
+.escuro .titulo {
+color: var(--azul-claro);
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="topo">
+<div>
+<h1>CalFéx IA</h1>
+<div class="sub">Assistente v6.0</div>
+</div>
+<div class="acoes">
+<button id="btnTema" title="Tema">◐</button>
+</div>
+</div>
+
+<div class="chat" id="chat">
+<div class="msg ia">
+<div class="avatar">IA</div>
+<div class="balao">
+<div class="titulo">CalFéx IA v6.0</div>
+<div class="paragrafo">Interpreto qualquer pergunta sobre a CalFéx Pro e respondo com precisão total. Sem dúvidas, sem rodeios.</div>
+<div class="paragrafo">Pergunta de forma natural. Eu entendo contexto, sinônimos e deduções.</div>
+</div>
+</div>
+</div>
+
+<div class="sugestoes">
+<div class="tag" data-q="como calculo média">Calcular média</div>
+<div class="tag" data-q="como guardo disciplina">Guardar disciplina</div>
+<div class="tag" data-q="gráfico geral">Gráfico geral</div>
+</div>
+
+<div class="inputArea">
+<input type="text" id="input" placeholder="Pergunta sobre a CalFéx Pro...">
+<button class="btnEnviar" id="btnEnviar">➤</button>
+</div>
+</div>
+
+<script>
+const chat = document.getElementById('chat');
+const input = document.getElementById('input');
+const btnEnviar = document.getElementById('btnEnviar');
+const btnTema = document.getElementById('btnTema');
+
+function addMsg(texto, quem) {
+const div = document.createElement('div');
+div.className = 'msg ' + quem;
+div.innerHTML = quem === 'ia' 
+? '<div class="avatar">IA</div><div class="balao">' + texto + '</div>'
+: '<div class="balao">' + texto + '</div>';
+chat.appendChild(div);
+chat.scrollTop = chat.scrollHeight;
+}
+
+function digitando() {
+const div = document.createElement('div');
+div.className = 'msg ia';
+div.id = 'dig';
+div.innerHTML = '<div class="avatar">IA</div><div class="balao digitando"><span></span><span></span><span></span></div>';
+chat.appendChild(div);
+chat.scrollTop = chat.scrollHeight;
+}
+
+function removeDigitando() {
+const d = document.getElementById('dig');
+if(d) d.remove();
+}
+
+function tema() {
+document.body.classList.toggle('escuro');
+}
+
+function enviar() {
+const texto = input.value.trim();
+if(!texto) return;
+addMsg(texto, 'user');
+input.value = '';
+digitando();
+setTimeout(() => {
+removeDigitando();
+addMsg(processar(texto), 'ia');
+}, 500);
+}
+
+function processar(pergunta) {
+pergunta = pergunta.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+
+// MOTOR DE INTERPRETAÇÃO - DEDUZ INTENÇÃO
+let intencao = '';
+
+if(pergunta.match(/calcular|media|media|nota final|quanto tirei|some as notas/)) intencao = 'calcular';
+else if(pergunta.match(/guardar|salvar|adicionar|criar disciplina|disciplina nova/)) intencao = 'guardar';
+else if(pergunta.match(/grafico|grafico|sobrepostas|comparar disciplinas|ver notas/)) intencao = 'grafico';
+else if(pergunta.match(/nota que falta|preciso|quantos pontos|quanto preciso tirar/)) intencao = 'falta';
+else if(pergunta.match(/erro|nao funciona|bug|nan|problema|trava/)) intencao = 'erro';
+else if(pergunta.match(/botao|funcao|para que serve|o que faz|cada opcao/)) intencao = 'botoes';
+else if(pergunta.match(/caracteristica|recurso|o que a app faz|funcoes/)) intencao = 'caracteristicas';
+else if(pergunta.match(/criador|quem fez|autor|melcaniel/)) intencao = 'criador';
+else if(pergunta.match(/codigo|programar|html|javascript|css/)) intencao = 'codigo';
+
+// RESPOSTAS DEFINITIVAS SEM DÚVIDA
+
+if(intencao === 'codigo') {
+return '<div class="alerta">Acesso negado a código de programação.</div><div class="paragrafo">Respondo apenas sobre uso da CalFéx Pro. Pergunta sobre funções, cálculos ou características que respondo com precisão total.</div>';
+}
+
+if(intencao === 'calcular') {
+return '<div class="titulo">Cálculo de Média</div>' +
+'<div class="paragrafo">A CalFéx Pro calcula média usando fórmula exata: Média = (P1 + P2 + MAC) ÷ 3</div>' +
+'<div class="paragrafo">Procedimento: Menu → Calcular Média → Digita P1, P2, MAC → Calcular.</div>' +
+'<div class="exemplo">Exemplo real: P1=14, P2=12, MAC=16. Resultado: 42 ÷ 3 = 14.00. Status: APROVADO pois ≥ 10.0</div>' +
+'<div class="dica">Notas válidas: 0 a 20. Decimal usa ponto: 14.5. Limpar apaga todos campos.</div>';
+}
+
+if(intencao === 'guardar') {
+return '<div class="titulo">Guardar Disciplina</div>' +
+'<div class="paragrafo">Função armazena disciplina com nome e 3 notas para consulta posterior e geração de gráficos.</div>' +
+'<div class="paragrafo">Procedimento: Menu → Desempenho → Nome da Disciplina → Nota T1 → Nota T2 → Nota T3 → Guardar Disciplina.</div>' +
+'<div class="exemplo">Exemplo: Nome "Matemática", T1=15, T2=13, T3=17. Média calculada automaticamente: 15.0</div>' +
+'<div class="dica">Limite: 8 disciplinas. Dados salvos localmente no dispositivo. Se nome duplicar, app solicita substituição.</div>';
+}
+
+if(intencao === 'grafico') {
+return '<div class="titulo">Gráfico Geral</div>' +
+'<div class="paragrafo">Exibe todas disciplinas guardadas em um único gráfico comparativo com cores distintas por disciplina.</div>' +
+'<div class="paragrafo">Procedimento: Guardar mínimo 1 disciplina → Menu Desempenho → Gráfico Geral - Sobrepostas.</div>' +
+'<div class="exemplo">Interpretação: Eixo X = T1, T2, T3. Eixo Y = Notas 0-20. Cada disciplina = linha colorida. Permite comparar desempenho entre disciplinas e entre avaliações.</div>' +
+'<div class="dica">Clique no gráfico abre versão ampliada. Legenda inferior identifica cada disciplina por cor.</div>';
+}
+
+if(intencao === 'falta') {
+return '<div class="titulo">Nota que Falta</div>' +
+'<div class="paragrafo">Calcula nota mínima necessária na avaliação pendente para atingir média desejada.</div>' +
+'<div class="paragrafo">Procedimento: Menu → Nota que Falta → Média Desejada → Preenche notas existentes → Deixa campo da nota pendente vazio → Calcular.</div>' +
+'<div class="exemplo">Exemplo: Média desejada 10.0, P1=8, MAC=12, P2 pendente. Resultado: Precisa 10.0 na P2.</div>' +
+'<div class="dica">Resultado < 0 = já aprovado mesmo com zero. Resultado > 20 = impossível atingir média desejada.</div>';
+}
+
+if(intencao === 'erro') {
+return '<div class="titulo">Diagnóstico de Erros</div>' +
+'<div class="paragrafo">Erro "Preenche as 3 notas": Campo obrigatório vazio. Solução: Preencher P1, P2, MAC completamente.</div>' +
+'<div class="paragrafo">Erro NaN: Valor não numérico digitado. Solução: Usar apenas números 0-20 com ponto decimal.</div>' +
+'<div class="paragrafo">Gráfico vazio: Nenhuma disciplina guardada. Solução: Guardar disciplina antes de abrir gráfico.</div>' +
+'<div class="paragrafo">Impossível na Nota que Falta: Mesmo com nota 20 não atinge média desejada. Solução: Reduzir média desejada ou melhorar notas existentes.</div>';
+}
+
+if(intencao === 'botoes') {
+return '<div class="titulo">Funções dos Botões</div>' +
+'<div class="lista">' +
+'<li><b>Calcular:</b> Executa média P1+P2+MAC÷3 e determina aprovação ≥10.0</li>' +
+'<li><b>Limpar:</b> Remove todos valores dos campos ativos</li>' +
+'<li><b>Nota que Falta:</b> Calcula nota mínima para média alvo</li>' +
+'<li><b>Guardar Disciplina:</b> Salva nome + T1 + T2 + T3 no armazenamento local</li>' +
+'<li><b>Média Geral:</b> Calcula média aritmética de todas disciplinas guardadas</li>' +
+'<li><b>Gráfico Geral:</b> Gera gráfico comparativo de todas disciplinas</li>' +
+'<li><b>Ver Gráfico:</b> Gera gráfico individual da disciplina selecionada</li>' +
+'<li><b>Eliminar:</b> Remove disciplina da lista após confirmação</li>' +
+'<li><b>⚙️:</b> Acessa Criador, Idioma e Ajuda</li>' +
+'</div>';
+}
+
+if(intencao === 'caracteristicas') {
+return '<div class="titulo">Características Completas CalFéx Pro v1.0 PRO</div>' +
+'<div class="lista">' +
+'<li>Cálculo de média de 3 notas com precisão de 2 casas decimais</li>' +
+'<li>Determinação automática de aprovação: ≥10.0 aprovado, <10.0 reprovado</li>' +
+'<li>Cálculo de nota mínima para média alvo considerando notas existentes</li>' +
+'<li>Armazenamento de até 8 disciplinas com nome personalizado</li>' +
+'<li>Geração de gráfico individual por disciplina T1-T2-T3</li>' +
+'<li>Geração de gráfico geral comparativo entre todas disciplinas</li>' +
+'<li>Persistência de dados via armazenamento local do navegador</li>' +
+'<li>Interface com botão configurações sempre acessível</li>' +
+'<li>Sistema de alertas centralizado para erros e confirmações</li>' +
+'</div>' +
+'<div class="dica">Parâmetros: Notas 0-20. Mínimo aprovação 10.0. Decimal com ponto.</div>';
+}
+
+if(intencao === 'criador') {
+return '<div class="titulo">Criador</div>' +
+'<div class="paragrafo">Melcaniel Ulima, estudante 10ª classe, Instituto de Telecomunicações ITEL. Filho de Inocêncio Ulima e Ana Paula Ulima. Irmão de Paula Fernanda Ulima.</div>' +
+'<div class="paragrafo">Versão: CalFéx Pro v1.0 PRO. Objetivo: Cálculo de médias e acompanhamento de desempenho escolar.</div>';
+}
+
+// INTERPRETAÇÃO CONTEXTUAL - DEDUZ MESMO PERGUNTA AMBÍGUA
+if(pergunta.length > 2) {
+if(pergunta.match(/como|fazer|usar|funciona/)) {
+return '<div class="titulo">Uso da CalFéx Pro</div>' +
+'<div class="paragrafo">Especifica qual função desejas: calcular média, guardar disciplina, ver gráfico geral, calcular nota que falta, ou funções dos botões.</div>' +
+'<div class="dica">Pergunta direta: "como calculo média" ou "como guardo disciplina". Respondo com procedimento exato.</div>';
+}
+return '<div class="paragrafo">Dúvida sobre CalFéx Pro. Pergunta específica sobre: cálculo de média, armazenamento de disciplina, gráficos, nota que falta, erros ou funções dos botões. Respondo com precisão total.</div>';
+}
+
+return 'Pergunta sobre CalFéx Pro. Respostas disponíveis: cálculo de média, guardar disciplina, gráficos, nota que falta, erros, botões, características.';
+}
+
+// EVENTOS
+btnEnviar.onclick = enviar;
+input.onkeypress = e => { if(e.key === 'Enter') enviar(); };
+btnTema.onclick = tema;
+document.querySelectorAll('.tag').forEach(tag => {
+tag.onclick = () => {
+input.value = tag.dataset.q;
+enviar();
+};
+});
+
+input.focus();
+</script>
+</body>
+</html>
